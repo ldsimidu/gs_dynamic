@@ -68,7 +68,6 @@ def formatar_ocorrencia(o):
 
     return (formatado)
 
-
 def listar_por_severidade():
     lista = list(ocorrencias.values())
     for i in range(1, len(lista)):
@@ -131,6 +130,48 @@ def prioridade_ocorrencia():
         listar_por_severidade()
     retorna_menu()
 
+
+def validar_ocorrencia():
+    limpa_tela()
+    print("✅ Validação de Ocorrência:\n")
+
+    if not ocorrencias:
+        print("⛔ Nenhuma ocorrência registrada.")
+        return retorna_menu()
+    while True:
+        print("🔍 Ocorrências ativas:")
+        for o in ocorrencias.values():
+            print(f"{o['id']} | Região: {o['regiao']} | Local: {o['local']} | Severidade: {o['severidade']}")
+
+        id_escolhido = input_nao_vazio("\nDigite o ID da ocorrência que deseja validar:\n-> ").upper()
+
+        if id_escolhido in ocorrencias:
+            ocorrencia = ocorrencias.pop(id_escolhido)
+            print("\n🔎 Detalhes adicionais da resolução:")
+
+            vitimas_fatais = input_nao_vazio("Houve vítimas fatais? (Sim/Não):\n-> ").capitalize()
+            feridos = input_nao_vazio("Número de feridos (0 se nenhum):\n-> ")
+            area_queimada = input_nao_vazio("Área estimada queimada (em hectares):\n-> ")
+            recursos = input_nao_vazio("Recursos utilizados (ex: caminhões, helicópteros, drones):\n-> ")
+            relato = input_nao_vazio("Relato final da equipe:\n-> ")
+
+            ocorrencia["resolvido_em"] = datetime.datetime.now()
+            ocorrencia["vítimas_fatais"] = vitimas_fatais
+            ocorrencia["feridos"] = feridos
+            ocorrencia["área_queimada"] = area_queimada
+            ocorrencia["recursos_utilizados"] = recursos
+            ocorrencia["relato_final"] = relato
+
+            historico.append(ocorrencia)
+
+            print(f"\n✅ Ocorrência {id_escolhido} validada com sucesso!")
+            print(formatar_ocorrencia(ocorrencia))
+            break
+        else:
+            print("⚠️ ID não encontrado. Tente novamente.")
+
+    retorna_menu()
+
 # -------------- MENU PRINCIPAL -------------- #
 
 def main_queimadas():
@@ -153,7 +194,7 @@ def main_queimadas():
     elif opcao == '2':
         prioridade_ocorrencia()
     elif opcao == '3':
-        print("opc3")
+        validar_ocorrencia()
     elif opcao == '0':
         print("👋 Até logo!")
 
