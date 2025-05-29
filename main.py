@@ -70,7 +70,7 @@ def formatar_ocorrencia(o):
     return (formatado)
 
 
-def listar_por_severidade(ocorrencias):
+def listar_por_severidade():
     lista = list(ocorrencias.values())
     for i in range(1, len(lista)):
         chave = lista[i]
@@ -120,6 +120,16 @@ def inserir_ocorrencia():
     retorna_menu()
 
 
+def prioridade_ocorrencia():
+    limpa_tela()
+    print("❗Ocorrências por prioridade:\n")
+    if not ocorrencias:
+        print("⛔ Nenhuma ocorrência para atender.")
+    else:
+        print("=" * 45)
+        listar_por_severidade()
+    retorna_menu()
+
 # -------------- MENU PRINCIPAL -------------- #
 
 def main_queimadas():
@@ -129,7 +139,7 @@ def main_queimadas():
     print("-=" * 20)
     print('''
     1) Inserir nova ocorrência
-    2) Atender próxima ocorrência prioritária
+    2) Listar ocorrências por severidade
     3) Listar ocorrências pendentes
     0) Sair
     ''')
@@ -140,7 +150,7 @@ def main_queimadas():
     if opcao == '1':
         inserir_ocorrencia()
     elif opcao == '2':
-        listar_por_severidade(ocorrencias)
+        prioridade_ocorrencia()
     elif opcao == '3':
         print("opc3")
     elif opcao == '0':
