@@ -20,6 +20,10 @@ def forca_opcao(lista, mensagem):
         else:
             return escolha
 
+def retorna_menu():
+    input("\n◀️ Pressione ENTER para voltar ao menu...")
+    main_queimadas()
+
 def escolher_regiao():
     regioes = {
         "1": "Norte",
@@ -43,11 +47,48 @@ def escolher_regiao():
     return regiao_escolhida
 
 def formatar_ocorrencia(o):
-    return (f"🆔 {o['id']} \n🗺️ Região: {o['regiao']} \n🔥 Severidade: {o['severidade']} "
-            f"\n📄 {o['descricao']} \n⏰ {o['timestamp'].strftime('%d/%m/%Y %H:%M:%S')}")
+    x = ("=" * 20)
+    formatado = f"""
+{x}
+🆔 {o['id']}
+🗺️ Região: {o['regiao']}
+🔥 Severidade: {o['severidade']}
+📄 {o['descricao']}
+⏰ {o['timestamp'].strftime('%d/%m/%Y %H:%M:%S')} """
+
+    return (formatado)
 
 def inserir_ocorrencia():
-    print("opc1")
+    print("📌 Inserir Nova Ocorrência:")
+    
+    regiao = escolher_regiao()
+    
+    while True:
+        try:
+            severidade = int(forca_opcao(['1','2','3','4','5'], "Informe a severidade (1 a 5):\n-> ").strip())
+            if severidade < 1 or severidade > 5:
+                raise ValueError("Severidade fora do intervalo permitido.")
+        except ValueError as e:
+            print(f"⚠️ Valor inválido ({e}). Digite um número entre 1 e 5.\n")
+        else:
+            break
+
+    descricao = input_nao_vazio("Descreva a ocorrência:\n-> ")
+
+    novo_id = len(ocorrencias) + 1
+    id_str = f"OCR{novo_id:03d}"
+    ocorrencia = {
+        "id": f"OCR{novo_id:03d}",
+        "regiao": regiao,
+        "severidade": severidade,
+        "descricao": descricao,
+        "timestamp": datetime.datetime.now()
+    }
+
+    ocorrencias[id_str] = ocorrencia
+    print(f"\n✅ Ocorrência registrada com sucesso:\n{formatar_ocorrencia(ocorrencia)}"
+        )
+    retorna_menu()
 
 def main_queimadas():
     print("-=" * 20)
