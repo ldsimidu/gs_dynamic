@@ -4,6 +4,9 @@ dia_hoje = datetime.date.today()
 ocorrencias = {}
 historico = []
 
+
+# -------------- FUNÇÕES DE UTILIDADE -------------- #
+
 def input_nao_vazio(mensagem):
     while True:
         texto = input(mensagem).strip()
@@ -23,6 +26,9 @@ def forca_opcao(lista, mensagem):
 def retorna_menu():
     input("\n◀️ Pressione ENTER para voltar ao menu...")
     main_queimadas()
+
+
+# -------------- VISUALIZAÇÃO -------------- #
 
 def escolher_regiao():
     regioes = {
@@ -58,6 +64,9 @@ def formatar_ocorrencia(o):
 
     return (formatado)
 
+
+# -------------- AÇÕES -------------- #
+
 def inserir_ocorrencia():
     print("📌 Inserir Nova Ocorrência:")
     
@@ -89,6 +98,9 @@ def inserir_ocorrencia():
     print(f"\n✅ Ocorrência registrada com sucesso:\n{formatar_ocorrencia(ocorrencia)}"
         )
     retorna_menu()
+
+
+# -------------- MENU PRINCIPAL -------------- #
 
 def main_queimadas():
     print("-=" * 20)
