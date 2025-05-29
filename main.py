@@ -141,15 +141,17 @@ def validar_ocorrencia():
     while True:
         print("🔍 Ocorrências ativas:")
         for o in ocorrencias.values():
-            print(f"{o['id']} | Região: {o['regiao']} | Local: {o['local']} | Severidade: {o['severidade']}")
+            print(f"{o['id']} | Severidade: {o['severidade']} | Região: {o['regiao']} | Local: {o['local']} | Severidade: {o['severidade']}")
 
         id_escolhido = input_nao_vazio("\nDigite o ID da ocorrência que deseja validar:\n-> ").upper()
 
         if id_escolhido in ocorrencias:
+            limpa_tela()
             ocorrencia = ocorrencias.pop(id_escolhido)
             print("\n🔎 Detalhes adicionais da resolução:")
+            print("-" * 20)
 
-            vitimas_fatais = input_nao_vazio("Houve vítimas fatais? (Sim/Não):\n-> ").capitalize()
+            vitimas_fatais = forca_opcao(['s','n'], "Houve vítimas fatais? (s/n):\n-> ").capitalize()
             feridos = input_nao_vazio("Número de feridos (0 se nenhum):\n-> ")
             area_queimada = input_nao_vazio("Área estimada queimada (em hectares):\n-> ")
             recursos = input_nao_vazio("Recursos utilizados (ex: caminhões, helicópteros, drones):\n-> ")
@@ -164,12 +166,38 @@ def validar_ocorrencia():
 
             historico.append(ocorrencia)
 
+            limpa_tela()
             print(f"\n✅ Ocorrência {id_escolhido} validada com sucesso!")
             print(formatar_ocorrencia(ocorrencia))
             break
         else:
             print("⚠️ ID não encontrado. Tente novamente.")
 
+    retorna_menu()
+
+
+def listar_historico():
+    limpa_tela()
+    print("📚 Histórico de Ocorrências Solucionadas:\n")
+
+    if not historico:
+        print("⛔ Nenhuma ocorrência solucionada ainda.")
+    else:
+        for o in historico:
+            print("=" * 50)
+            print(formatar_ocorrencia(o))
+            if "vítimas_fatais" in o:
+                print(f"⚰️ Vítimas Fatais: {o['vítimas_fatais']}")
+            if "feridos" in o:
+                print(f"🚑 Feridos: {o['feridos']}")
+            if "área_queimada" in o:
+                print(f"🌾 Área Queimada: {o['área_queimada']} hectares")
+            if "recursos_utilizados" in o:
+                print(f"🚒 Recursos Utilizados: {o['recursos_utilizados']}")
+            if "relato_final" in o:
+                print(f"📝 Relato Final:\n{o['relato_final']}")
+            print(f"📅 Resolvido em: {o['resolvido_em'].strftime('%d/%m/%Y %H:%M:%S')}")
+            print("=" * 50 + "\n")
     retorna_menu()
 
 # -------------- MENU PRINCIPAL -------------- #
@@ -183,6 +211,7 @@ def main_queimadas():
     1) Inserir nova ocorrência
     2) Listar ocorrências por severidade
     3) Validar ocorrência solucionada
+    4) Ver histórico de ocorrências
     0) Sair
     ''')
     print("-=" * 20 + "\n")
@@ -195,6 +224,8 @@ def main_queimadas():
         prioridade_ocorrencia()
     elif opcao == '3':
         validar_ocorrencia()
+    elif opcao == '4':
+        listar_historico()
     elif opcao == '0':
         print("👋 Até logo!")
 
