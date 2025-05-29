@@ -1,3 +1,4 @@
+import os
 import datetime
 
 dia_hoje = datetime.date.today()
@@ -22,6 +23,10 @@ def forca_opcao(lista, mensagem):
             print("⚠️ Opção inválida. Tente novamente.")
         else:
             return escolha
+
+def limpa_tela():
+    comando = 'cls' if os.name == 'nt' else 'clear'
+    os.system(comando)
 
 def retorna_menu():
     input("\n◀️ Pressione ENTER para voltar ao menu...")
@@ -68,6 +73,7 @@ def formatar_ocorrencia(o):
 # -------------- AÇÕES -------------- #
 
 def inserir_ocorrencia():
+    limpa_tela()
     print("📌 Inserir Nova Ocorrência:")
     
     regiao = escolher_regiao()
@@ -103,6 +109,7 @@ def inserir_ocorrencia():
 # -------------- MENU PRINCIPAL -------------- #
 
 def main_queimadas():
+    limpa_tela()
     print("-=" * 20)
     print("🔥  SIMULADOR DE RESPOSTA A QUEIMADAS 🔥")
     print("-=" * 20)
