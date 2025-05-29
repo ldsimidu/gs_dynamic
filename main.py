@@ -1,8 +1,7 @@
-import heapq
 import datetime
 
 dia_hoje = datetime.date.today()
-ocorrencias = []
+ocorrencias = {}
 historico = []
 
 def input_nao_vazio(mensagem):
