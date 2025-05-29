@@ -58,12 +58,11 @@ def escolher_regiao():
     return regiao_escolhida
 
 def formatar_ocorrencia(o):
-    x = ("=" * 20)
     formatado = f"""
-{x}
 🆔 {o['id']}
 🗺️ Região: {o['regiao']}
 🔥 Severidade: {o['severidade']}
+🏙️ Local: {o['local']}
 📄 {o['descricao']}
 ⏰ {o['timestamp'].strftime('%d/%m/%Y %H:%M:%S')} """
 
@@ -82,7 +81,7 @@ def listar_por_severidade():
         lista[j + 1] = chave
 
     for o in lista:
-        print(f"{o['id']} | Severidade: {o['severidade']} | Região: {o['regiao']}")
+        print(f"{o['id']} | Severidade: {o['severidade']} | Região: {o['regiao']} | Local: {o['local']}")
 
 # -------------- AÇÕES -------------- #
 
@@ -102,6 +101,7 @@ def inserir_ocorrencia():
         else:
             break
 
+    local = input_nao_vazio("Insira o endereço:\n-> ")
     descricao = input_nao_vazio("Descreva a ocorrência:\n-> ")
 
     novo_id = len(ocorrencias) + 1
@@ -110,6 +110,7 @@ def inserir_ocorrencia():
         "id": f"OCR{novo_id:03d}",
         "regiao": regiao,
         "severidade": severidade,
+        "local": local,
         "descricao": descricao,
         "timestamp": datetime.datetime.now()
     }
@@ -140,7 +141,7 @@ def main_queimadas():
     print('''
     1) Inserir nova ocorrência
     2) Listar ocorrências por severidade
-    3) Listar ocorrências pendentes
+    3) Validar ocorrência solucionada
     0) Sair
     ''')
     print("-=" * 20 + "\n")
