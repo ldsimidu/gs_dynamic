@@ -70,6 +70,20 @@ def formatar_ocorrencia(o):
     return (formatado)
 
 
+def listar_por_severidade(ocorrencias):
+    lista = list(ocorrencias.values())
+    for i in range(1, len(lista)):
+        chave = lista[i]
+        j = i - 1
+        
+        while j >= 0 and lista[j]['severidade'] < chave['severidade']:
+            lista[j + 1] = lista[j]
+            j -= 1
+        lista[j + 1] = chave
+
+    for o in lista:
+        print(f"{o['id']} | Severidade: {o['severidade']} | Região: {o['regiao']}")
+
 # -------------- AÇÕES -------------- #
 
 def inserir_ocorrencia():
@@ -126,7 +140,7 @@ def main_queimadas():
     if opcao == '1':
         inserir_ocorrencia()
     elif opcao == '2':
-        print("opc2")
+        listar_por_severidade(ocorrencias)
     elif opcao == '3':
         print("opc3")
     elif opcao == '0':
