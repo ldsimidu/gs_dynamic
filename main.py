@@ -82,9 +82,9 @@ def listar_por_severidade():
 # -------------- AÇÕES -------------- #
 
 def inserir_ocorrencia():
-    limpa_tela()
-    print("📌 Inserir Nova Ocorrência:")
     while True:
+        limpa_tela()
+        print("📌 Inserir Nova Ocorrência:")
         regiao = escolher_regiao()
 
         while True:
