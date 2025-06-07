@@ -1,12 +1,23 @@
 import os
 import datetime
+import random
+import heapq
+from collections import defaultdict, deque
 
+# -------------------- DADOS E ESTRUTURAS -------------------- #
 dia_hoje = datetime.date.today()
 ocorrencias = {}
 historico = []
 
-# -------------- FUNÇÕES DE UTILIDADE -------------- #
+rotas = {
+    "Norte": ["Centro", "Leste"],
+    "Sul": ["Centro"],
+    "Leste": ["Norte", "Centro"],
+    "Oeste": ["Centro"],
+    "Centro": ["Norte", "Sul", "Leste", "Oeste"]
+}
 
+# -------------- FUNÇÕES DE UTILIDADE -------------- #
 def input_nao_vazio(mensagem):
     while True:
         texto = input(mensagem).strip()
@@ -30,8 +41,6 @@ def limpa_tela():
 def retorna_menu():
     input("\n◀️ Pressione ENTER para voltar ao menu...")
     main_queimadas()
-
-# -------------- VISUALIZAÇÃO -------------- #
 
 def escolher_regiao():
     regioes = {
@@ -66,6 +75,20 @@ def formatar_ocorrencia(o):
 ⏰ Criado em: {o['timestamp'].strftime('%d/%m/%Y %H:%M:%S')}"""
     return formatado
 
+# -------------- FUNÇÕES DE UTILIDADE -------------- #
+
+def busca_binaria_por_id(lista, target):
+    esquerda, direita = 0, len(lista) - 1
+    while esquerda <= direita:
+        meio = (esquerda + direita) // 2
+        if lista[meio]["id"] == target:
+            return lista[meio]
+        elif lista[meio]["id"] < target:
+            esquerda = meio + 1
+        else:
+            direita = meio - 1
+    return None
+
 def listar_por_severidade():
     lista = list(ocorrencias.values())
     for i in range(1, len(lista)):
@@ -79,7 +102,35 @@ def listar_por_severidade():
     for o in lista:
         print(f"{o['id']} | Severidade: {o['severidade']} | Região: {o['regiao']} | Local: {o['local']}")
 
-# -------------- AÇÕES -------------- #
+def simular_ocorrencias_aleatorias():
+    limpa_tela()
+    print("🧪 Simulando ocorrências automáticas...")
+    for i in range(5):
+        regiao = random.choice(list(rotas.keys()))
+        severidade = i + 1  # crescente
+        local = f"Área {random.randint(100, 999)}"
+        descricao = f"Foco de incêndio detectado automaticamente."
+
+        novo_id = len(ocorrencias) + 1
+        id_str = f"SIM{novo_id:03d}"
+        ocorrencias[id_str] = {
+            "id": id_str,
+            "regiao": regiao,
+            "severidade": severidade,
+            "local": local,
+            "descricao": descricao,
+            "timestamp": datetime.datetime.now(),
+            "status": "Em andamento"
+        }
+    print("✅ Simulação concluída com sucesso!")
+    retorna_menu()
+
+def mostrar_grafo():
+    limpa_tela()
+    print("🌐 Conectividade entre regiões (Grafo):\n")
+    for origem, destinos in rotas.items():
+        print(f"{origem} ➡ {', '.join(destinos)}")
+    retorna_menu()
 
 def inserir_ocorrencia():
     while True:
@@ -89,7 +140,7 @@ def inserir_ocorrencia():
 
         while True:
             try:
-                severidade = int(forca_opcao(['1','2','3','4','5'], "Informe a severidade (1 a 5):\n-> ").strip())
+                severidade = int(forca_opcao(['1','2','3','4','5'], "Informe a severidade (1 a 5):\n-> "))
                 if severidade < 1 or severidade > 5:
                     raise ValueError("Severidade fora do intervalo permitido.")
             except ValueError as e:
@@ -111,7 +162,7 @@ def inserir_ocorrencia():
             "timestamp": datetime.datetime.now(),
             "status": "Em andamento"
         }
-        
+
         limpa_tela()
         print(f"Dados da ocorrência:\n{formatar_ocorrencia(ocorrencia)}\n")
         conf = forca_opcao(['s','n'], "\nDeseja confirmar os dados da ocorrência? (s/n):\n-> ")
@@ -147,9 +198,12 @@ def validar_ocorrencia():
 
     id_escolhido = input_nao_vazio("\nDigite o ID da ocorrência que deseja validar:\n-> ").upper()
 
-    if id_escolhido in ocorrencias:
+    lista_ids_ordenada = sorted(ocorrencias.values(), key=lambda x: x["id"])
+    ocorrencia = busca_binaria_por_id(lista_ids_ordenada, id_escolhido)
+
+    if ocorrencia:
+        ocorrencias.pop(id_escolhido)
         limpa_tela()
-        ocorrencia = ocorrencias.pop(id_escolhido)
         print("\n🔎 Detalhes adicionais da resolução:")
         print("-" * 20)
 
@@ -199,8 +253,7 @@ def listar_historico():
             print("=" * 50 + "\n")
     retorna_menu()
 
-# -------------- MENU PRINCIPAL -------------- #
-
+# -------------------- MENU -------------------- #
 def main_queimadas():
     limpa_tela()
     print("-=" * 20)
@@ -211,11 +264,13 @@ def main_queimadas():
     2) Listar ocorrências por severidade
     3) Validar ocorrência solucionada
     4) Ver histórico de ocorrências
+    5) Simular ocorrências aleatórias
+    6) Mostrar grafo de regiões
     0) Sair
     ''')
     print("-=" * 20 + "\n")
 
-    opcao = forca_opcao(['0','1','2','3','4'], "Escolha uma opção:\n-> ")
+    opcao = forca_opcao(['0','1','2','3','4','5','6'], "Escolha uma opção:\n-> ")
 
     if opcao == '1':
         inserir_ocorrencia()
@@ -225,6 +280,10 @@ def main_queimadas():
         validar_ocorrencia()
     elif opcao == '4':
         listar_historico()
+    elif opcao == '5':
+        simular_ocorrencias_aleatorias()
+    elif opcao == '6':
+        mostrar_grafo()
     elif opcao == '0':
         print("👋 Até logo!")
 
